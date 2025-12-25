@@ -8,8 +8,10 @@ pkgdesc="Dracula variant of the Ant theme"
 arch=("any")
 url="https://github.com/EliverLara/${_pkgname}"
 license=('GPL')
+depends=('gtk-engine-murrine')
 makedepends=('git' 'inkscape' 'optipng')
-optdepends=('ttf-roboto: primary font face defined'
+optdepends=('gtk-engines: for GTK2 pixmap engine'
+			'ttf-roboto: primary font face defined'
 			'ttf-ubuntu-font-family: secondary font face defined'
 			'cantarell-fonts: tertiary font face defined')
 conflicts=('ant-dracula-gtk-theme')
