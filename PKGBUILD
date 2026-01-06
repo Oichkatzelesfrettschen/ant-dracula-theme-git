@@ -40,7 +40,18 @@ prepare() {
 	# Verify subprocess import exists in render scripts
 	for py_file in $(find . -name "render-*.py" -type f); do
 		if ! grep -q "import subprocess" "$py_file"; then
-			sed -i '1a import subprocess' "$py_file"
+			# Insert after shebang and encoding declarations
+			if head -n1 "$py_file" | grep -q "^#!"; then
+				# Has shebang, insert after it (and any encoding)
+				if sed -n '2p' "$py_file" | grep -q "coding"; then
+					sed -i '2a import subprocess' "$py_file"
+				else
+					sed -i '1a import subprocess' "$py_file"
+				fi
+			else
+				# No shebang, just prepend
+				sed -i '1i import subprocess' "$py_file"
+			fi
 		fi
 	done
 }

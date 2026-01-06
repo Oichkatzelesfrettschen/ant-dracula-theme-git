@@ -99,7 +99,7 @@ check_inkscape_version() {
     log_info "Inkscape version: $version"
     
     # Check if version is >= 1.0
-    if [ -n "$version" ] && awk -v ver="$version" 'BEGIN { exit (ver < 1.0) ? 0 : 1 }'; then
+    if [ -n "$version" ] && awk -v ver="$version" 'BEGIN { exit (ver >= 1.0) ? 0 : 1 }'; then
         log_warning "Inkscape version $version may not support modern export flags"
         log_warning "Version 1.0+ is recommended for best compatibility"
     fi
@@ -148,9 +148,6 @@ cleanup_temp_files() {
     find "$dir" -type f -name "Thumbs.db" -delete 2>/dev/null || true
 }
 
-# Export functions for use in PKGBUILD
-export -f log_info log_success log_warning log_error
-export -f start_timer end_timer
-export -f validate_assets render_assets_parallel
-export -f check_inkscape_version check_optipng
-export -f ensure_safe_directory cleanup_temp_files
+# Note: Functions above are designed to be sourced into the PKGBUILD environment.
+# They are not exported globally to avoid namespace pollution.
+# Each PKGBUILD function (prepare, build, package) sources this file when needed.
