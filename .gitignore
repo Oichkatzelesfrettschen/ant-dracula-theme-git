@@ -3,3 +3,31 @@ pkg
 Ant-Dracula
 *.pkg.tar.*
 tags
+
+# Build artifacts
+*.log
+build.log
+
+# Python
+*.pyc
+*.pyo
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Temporary
+*.tmp
+*.temp
+/tmp/
+
+# Package artifacts
+*.src.tar.gz
