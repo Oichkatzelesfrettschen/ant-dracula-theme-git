@@ -44,7 +44,7 @@ prepare() {
 			if head -n1 "$py_file" | grep -q "^#!"; then
 				# Has shebang, insert after it (and any encoding)
 				if sed -n '2p' "$py_file" | grep -q "coding"; then
-					sed -i '2a import subprocess' "$py_file"
+					sed -i '3a import subprocess' "$py_file"
 				else
 					sed -i '1a import subprocess' "$py_file"
 				fi
@@ -88,7 +88,7 @@ build() {
 	msg2 "Rendering GTK2 assets..."
 	start_timer "GTK2 assets" 2>/dev/null || true
 	(cd gtk-2.0 && ./render-assets.sh) || {
-		log_error "GTK2 asset rendering failed" 2>/dev/null || error "GTK2 asset rendering failed"
+		log_build_error "GTK2 asset rendering failed"
 		exit 1
 	}
 	end_timer "GTK2 assets" 2>/dev/null || true
@@ -97,7 +97,7 @@ build() {
 	msg2 "Rendering GTK 3.20 assets..."
 	start_timer "GTK 3.20 assets" 2>/dev/null || true
 	(cd gtk-3.20/assets && ./render-gtk3-assets.py && ./render-gtk3-assets-hidpi.py) || {
-		log_error "GTK 3.20 asset rendering failed" 2>/dev/null || error "GTK 3.20 asset rendering failed"
+		log_build_error "GTK 3.20 asset rendering failed"
 		exit 1
 	}
 	validate_assets "gtk-3.20/assets" "GTK 3.20" 2>/dev/null || true
@@ -107,7 +107,7 @@ build() {
 	msg2 "Rendering GTK 4.0 assets..."
 	start_timer "GTK 4.0 assets" 2>/dev/null || true
 	(cd gtk-4.0/assets && ./render-gtk3-assets.py && ./render-gtk3-assets-hidpi.py) || {
-		log_error "GTK 4.0 asset rendering failed" 2>/dev/null || error "GTK 4.0 asset rendering failed"
+		log_build_error "GTK 4.0 asset rendering failed"
 		exit 1
 	}
 	validate_assets "gtk-4.0/assets" "GTK 4.0" 2>/dev/null || true
@@ -117,7 +117,7 @@ build() {
 	msg2 "Rendering WM assets..."
 	start_timer "WM assets" 2>/dev/null || true
 	(cd src && ./render-wm-assets.py && ./render-wm-assets-hidpi.py) || {
-		log_error "WM asset rendering failed" 2>/dev/null || error "WM asset rendering failed"
+		log_build_error "WM asset rendering failed"
 		exit 1
 	}
 	end_timer "WM assets" 2>/dev/null || true
