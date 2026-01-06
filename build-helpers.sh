@@ -98,8 +98,8 @@ check_inkscape_version() {
     local version=$(inkscape --version 2>&1 | head -n1 | grep -oP '\d+\.\d+' | head -n1)
     log_info "Inkscape version: $version"
     
-    # Check if version is >= 1.0
-    if [ -n "$version" ] && awk -v ver="$version" 'BEGIN { exit (ver >= 1.0) ? 0 : 1 }'; then
+    # Check if version is < 1.0
+    if [ -n "$version" ] && awk -v ver="$version" 'BEGIN { exit (ver < 1.0) ? 0 : 1 }'; then
         log_warning "Inkscape version $version may not support modern export flags"
         log_warning "Version 1.0+ is recommended for best compatibility"
     fi
@@ -146,6 +146,12 @@ cleanup_temp_files() {
     find "$dir" -type f \( -name "*.pyc" -o -name "*.pyo" -o -name "__pycache__" \) -delete 2>/dev/null || true
     find "$dir" -type f -name ".DS_Store" -delete 2>/dev/null || true
     find "$dir" -type f -name "Thumbs.db" -delete 2>/dev/null || true
+}
+
+# Error handler for build steps
+log_build_error() {
+    local message="$1"
+    log_error "$message" 2>/dev/null || error "$message"
 }
 
 # Note: Functions above are designed to be sourced into the PKGBUILD environment.

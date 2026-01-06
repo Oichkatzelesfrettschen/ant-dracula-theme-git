@@ -86,7 +86,7 @@ if [ -f "PKGBUILD" ]; then
             log_success "namcap validation passed"
         else
             log_warning "namcap found issues:"
-            cat /tmp/namcap.log | sed 's/^/  /'
+            sed 's/^/  /' /tmp/namcap.log
         fi
         rm -f /tmp/namcap.log
     fi
@@ -127,7 +127,7 @@ if command -v shellcheck &> /dev/null; then
                 log_success "$script passes shellcheck"
             else
                 log_warning "$script has shellcheck issues:"
-                cat /tmp/shellcheck.log | sed 's/^/  /'
+                sed 's/^/  /' /tmp/shellcheck.log
             fi
             rm -f /tmp/shellcheck.log
         fi
