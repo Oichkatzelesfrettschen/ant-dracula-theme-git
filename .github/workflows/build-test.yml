@@ -1,0 +1,50 @@
+name: Build Test
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: archlinux:latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Update system and install dependencies
+      run: |
+        pacman -Syu --noconfirm
+        pacman -S --noconfirm base-devel git inkscape optipng gtk-engine-murrine namcap
+    
+    - name: Create build user
+      run: |
+        useradd -m -G wheel builduser
+        echo "builduser ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+        chown -R builduser:builduser .
+    
+    - name: Validate PKGBUILD
+      run: |
+        sudo -u builduser namcap PKGBUILD || true
+    
+    - name: Build package
+      run: |
+        sudo -u builduser makepkg -sf --noconfirm
+    
+    - name: Check package contents
+      run: |
+        sudo -u builduser namcap *.pkg.tar.* || true
+    
+    - name: Upload package artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: package
+        path: '*.pkg.tar.*'
+        retention-days: 7
